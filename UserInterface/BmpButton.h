@@ -29,6 +29,9 @@ public:
     void enableLongPress(const bool flag);
     void enableLongPressRestore(const bool flag);
     void setLanguageType(const BmpButton::Type type);
+    void setImageAutoFillBackground(bool flag);
+    void setBorderVisible(bool flag);
+    void setBorderStyle(const QColor &checkColor, const QColor &normalColor = Qt::white, int w = 2);
 protected:
     bool event(QEvent* event);
     void mousePressEvent(QMouseEvent* event);

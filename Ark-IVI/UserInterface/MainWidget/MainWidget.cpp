@@ -364,27 +364,27 @@ void MainWidgetPrivate::onThemeChange(const int type)
 {
     switch (type) {
     case TT_ThemeOne: {
-        m_Background->setBackgroundBmpPath(QString(":/Images/MainWidgetThemeOneBackground.png"));
+        m_Background->setBackgroundBmpPath(QString(":/Images/hw_01_theme_main_01.jpg"));
         break;
     }
     case TT_ThemeTwo: {
-        m_Background->setBackgroundBmpPath(QString(":/Images/MainWidgetThemeTwoBackground.png"));
+        m_Background->setBackgroundBmpPath(QString(":/Images/hw_01_theme_main_02.png"));
         break;
     }
     case TT_ThemeThree: {
-        m_Background->setBackgroundBmpPath(QString(":/Images/MainWidgetThemeThreeBackground.png"));
+        m_Background->setBackgroundBmpPath(QString(":/Images/hw_01_theme_main_03.jpg"));
         break;
     }
     case TT_ThemeFour: {
-        m_Background->setBackgroundBmpPath(QString(":/Images/MainWidgetThemeFourBackground.png"));
+        m_Background->setBackgroundBmpPath(QString(":/Images/hw_01_theme_main_04.png"));
         break;
     }
     case TT_ThemeFive: {
-        m_Background->setBackgroundBmpPath(QString(":/Images/MainWidgetThemeFiveBackground.png"));
+        m_Background->setBackgroundBmpPath(QString(":/Images/hw_01_theme_main_05.png"));
         break;
     }
     case TT_ThemeSix: {
-        m_Background->setBackgroundBmpPath(QString(":/Images/MainWidgetThemeSixBackground.png"));
+        m_Background->setBackgroundBmpPath(QString(":/Images/hw_01_theme_main_06.png"));
         break;
     }
     default: {

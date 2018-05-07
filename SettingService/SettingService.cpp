@@ -175,7 +175,8 @@ void SettingService::setContrast(const SettingType type, const int value)
         break;
     }
     }
-    int ret = arkapi_set_layer_contrast(OSD1_LAYER, m_Private->m_Contrast);
+   // int ret = arkapi_set_layer_contrast(OSD1_LAYER, m_Private->m_Contrast);
+    int ret = 0;
     if (0 == ret) {
         int tempValue = (m_Private->m_Contrast - minimumConstrass) / constrasStep;
         if ((value + 7) != tempValue) {
@@ -210,7 +211,8 @@ void SettingService::setSaturation(const SettingType type, const int value)
         break;
     }
     }
-    int ret = arkapi_set_layer_saturation(OSD1_LAYER, m_Private->m_Saturation);
+   // int ret = arkapi_set_layer_saturation(OSD1_LAYER, m_Private->m_Saturation);
+    int ret = 0;
     if (0 == ret) {
         int tempValue = (m_Private->m_Saturation - minimumSaturation) / saturationStep;
         if ((value + 7) != tempValue) {
@@ -370,7 +372,7 @@ void SettingService::onTimeout()
             }
             m_Private->openDVRFrameBufferFileDescriptor();
             if (!m_Private->m_DetactFlag) {
-                arkapi_gui_tvout(0);
+                //arkapi_gui_tvout(0);
                 m_Private->m_DetactFlag = m_Private->startDVRData();
             }
         } else {
@@ -515,7 +517,7 @@ bool SettingServicePrivate::openDVRFileFileDescriptor()
 {
     bool ret(false);
     if (-1 == m_DVRFileDescriptor) {
-        m_DVRFileDescriptor = arkapi_open_dvr();
+      //  m_DVRFileDescriptor = arkapi_open_dvr();
         if (m_DVRFileDescriptor < 0) {
             printf("open dvr device failure.\n");
         } else {
@@ -529,11 +531,11 @@ bool SettingServicePrivate::switchDVRChannel(const dvr_source type)
 {
     bool ret(false);
     if (-1 != m_DVRFileDescriptor) {
-        if (arkapi_dvr_switch_channel(m_DVRFileDescriptor, type) < 0) {
-            printf("switch dvr failure.\n");
-        } else {
-            ret = true;
-        }
+      //  if (arkapi_dvr_switch_channel(m_DVRFileDescriptor, type) < 0) {
+      //      printf("switch dvr failure.\n");
+      //  } else {
+      //      ret = true;
+      //  }
     }
     return ret;
 }
@@ -546,11 +548,11 @@ bool SettingServicePrivate::configDVR(const dvr_source type, const int width, co
         if (!qgetenv("ARKTVOUT").isEmpty()) {
             tvout = 1;
         }
-        if (arkapi_dvr_config(m_DVRFileDescriptor, type, width, height, tvout) < 0) {
-            printf("config dvr failure.\n");
-        } else {
-            ret = true;
-        }
+     //   if (arkapi_dvr_config(m_DVRFileDescriptor, type, width, height, tvout) < 0) {
+     //      printf("config dvr failure.\n");
+     //   } else {
+     //       ret = true;
+      //  }
     }
     return ret;
 }
@@ -559,7 +561,7 @@ bool SettingServicePrivate::closeDVRFileFileDescriptor()
 {
     bool ret(false);
     if (-1 != m_DVRFileDescriptor) {
-        arkapi_close_dvr(m_DVRFileDescriptor);
+      //  arkapi_close_dvr(m_DVRFileDescriptor);
         m_DVRFileDescriptor = -1;
         ret = true;
     }
@@ -570,12 +572,12 @@ bool SettingServicePrivate::startDVRData()
 {
     bool ret(false);
     if (-1 != m_DVRFileDescriptor) {
-        if (arkapi_dvr_start(m_DVRFileDescriptor) < 0) {
-            printf("open start dvr failure.\n");
-        } else {
-            qDebug() << __PRETTY_FUNCTION__ << __LINE__;
-            ret = true;
-        }
+      //  if (arkapi_dvr_start(m_DVRFileDescriptor) < 0) {
+      //      printf("open start dvr failure.\n");
+       // } else {
+       //     qDebug() << __PRETTY_FUNCTION__ << __LINE__;
+       //     ret = true;
+       // }
     }
     return ret;
 }
@@ -586,7 +588,7 @@ bool SettingServicePrivate::stopDVRData()
     if (-1 != m_DVRFileDescriptor) {
         if (m_DetactFlag) {
             m_DetactFlag = false;
-            arkapi_dvr_stop(m_DVRFileDescriptor);
+           // arkapi_dvr_stop(m_DVRFileDescriptor);
         }
         ret = true;
     }
@@ -597,7 +599,7 @@ bool SettingServicePrivate::openDVRFrameBufferFileDescriptor()
 {
     bool ret(false);
     if (-1 == m_FrameBufferFileDescriptor) {
-        m_FrameBufferFileDescriptor = arkapi_open_video_fb();
+       // m_FrameBufferFileDescriptor = arkapi_open_video_fb();
         if (m_FrameBufferFileDescriptor < 0) {
             printf("open video fb device failure.\n");
         } else {
@@ -611,7 +613,7 @@ bool SettingServicePrivate::closeDVRFrameBufferFileDescriptor()
 {
     bool ret(false);
     if (-1 != m_FrameBufferFileDescriptor) {
-        arkapi_close_video_fb(m_FrameBufferFileDescriptor);
+       // arkapi_close_video_fb(m_FrameBufferFileDescriptor);
         m_FrameBufferFileDescriptor = -1;
         ret = true;
     }
@@ -620,6 +622,7 @@ bool SettingServicePrivate::closeDVRFrameBufferFileDescriptor()
 
 bool SettingServicePrivate::detectSignal()
 {
-    int ret = arkapi_dvr_detect_signal(m_DVRFileDescriptor);
-    return (0 != ret);
+    //int ret = arkapi_dvr_detect_signal(m_DVRFileDescriptor);
+   // return (0 != ret);
+    return false;
 }

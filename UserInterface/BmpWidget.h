@@ -13,8 +13,11 @@ public:
     explicit BmpWidget(QWidget *parent = NULL);
     ~BmpWidget();
     void setBackgroundBmpPath(const QString &path);
+    void setImageAutoFillBackground(bool flag);
+    void setWidgetAdaptToImage(bool flag);
 protected:
     void paintEvent(QPaintEvent* event);
+    void resizeEvent(QResizeEvent *);
 private:
     QScopedPointer<BmpWidgetPrivate> m_Private;
 };

@@ -25,7 +25,7 @@ ArkApplication::ArkApplication(int &argc, char **argv, QApplication::Type type)
     , m_Private(new ArkApplicationPrivate(argc, argv, this))
 {
     if (QApplication::GuiServer == type) {
-        QWSServer::setBackground(QBrush(QColor(0x00, 0x00, 0x00, 0x00)));
+      //  QWSServer::setBackground(QBrush(QColor(0x00, 0x00, 0x00, 0x00)));
         m_Private->initializeTranslator();
     }
 }

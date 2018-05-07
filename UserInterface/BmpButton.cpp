@@ -21,6 +21,11 @@ public:
     QTimer* m_Timer;
     bool m_Filter;
     bool m_LongPressRestore;
+    bool m_AutoFillBackground;
+    bool m_BorderVisible;
+    QColor m_BorderCheckedColor;
+    QColor m_BorderNormalColor;
+    int m_BorderWidth;
 private:
     BmpButton* m_Parent;
 };
@@ -96,6 +101,23 @@ void BmpButton::enableLongPressRestore(const bool flag)
 void BmpButton::setLanguageType(const BmpButton::Type type)
 {
     m_Private->m_LanguageType = type;
+}
+
+void BmpButton::setImageAutoFillBackground(bool flag)
+{
+    m_Private->m_AutoFillBackground = flag;
+}
+
+void BmpButton::setBorderVisible(bool flag)
+{
+    m_Private->m_BorderVisible = flag;
+}
+
+void BmpButton::setBorderStyle(const QColor &checkColor, const QColor &normalColor, int w)
+{
+    m_Private->m_BorderCheckedColor = checkColor;
+    m_Private->m_BorderNormalColor = normalColor;
+    m_Private->m_BorderWidth = w;
 }
 
 bool BmpButton::event(QEvent *event)
@@ -177,27 +199,63 @@ void BmpButton::paintEvent(QPaintEvent *event)
 void BmpButton::normalPaint(QPainter &painter)
 {
     if (NULL != m_Private->m_NormalPixmap) {
-        int x = (width() - m_Private->m_NormalPixmap->width()) >> 1;
-        int y = (height() - m_Private->m_NormalPixmap->height()) >> 1;
-        painter.drawPixmap(x, y, *m_Private->m_NormalPixmap);
+        if (!m_Private->m_BorderVisible) {
+            if (!m_Private->m_AutoFillBackground) {
+                int x = (width() - m_Private->m_NormalPixmap->width()) >> 1;
+                int y = (height() - m_Private->m_NormalPixmap->height()) >> 1;
+                painter.drawPixmap(x, y, *m_Private->m_NormalPixmap);
+            } else {
+                painter.drawPixmap(this->rect(), *m_Private->m_NormalPixmap);
+            }
+        }
+        else {
+            int w = m_Private->m_BorderWidth;
+            painter.setPen(QPen(QBrush(m_Private->m_BorderNormalColor), w));
+            painter.drawRect(this->rect());
+            painter.drawPixmap(w, w, this->width()-w*2, this->height()-w*2, *m_Private->m_NormalPixmap);
+        }
     }
 }
 
 void BmpButton::pressPaint(QPainter &painter)
 {
     if (NULL != m_Private->m_PressPixmap) {
-        int x = (width() - m_Private->m_PressPixmap->width()) >> 1;
-        int y = (height() - m_Private->m_PressPixmap->height()) >> 1;
-        painter.drawPixmap(x, y, *m_Private->m_PressPixmap);
+        if (!m_Private->m_BorderVisible) {
+            if (!m_Private->m_AutoFillBackground) {
+                int x = (width() - m_Private->m_NormalPixmap->width()) >> 1;
+                int y = (height() - m_Private->m_NormalPixmap->height()) >> 1;
+                painter.drawPixmap(x, y, *m_Private->m_PressPixmap);
+            } else {
+                painter.drawPixmap(this->rect(), *m_Private->m_PressPixmap);
+            }
+        }
+        else {
+            int w = m_Private->m_BorderWidth;
+            painter.setPen(QPen(QBrush(m_Private->m_BorderCheckedColor), w));
+            painter.drawRect(this->rect());
+            painter.drawPixmap(w, w, this->width()-w*2, this->height()-w*2, *m_Private->m_PressPixmap);
+        }
     }
 }
 
 void BmpButton::checkPaint(QPainter &painter)
 {
     if (NULL != m_Private->m_CheckPixmap) {
-        int x = (width() - m_Private->m_CheckPixmap->width()) >> 1;
-        int y = (height() - m_Private->m_CheckPixmap->height()) >> 1;
-        painter.drawPixmap(x, y, *m_Private->m_CheckPixmap);
+        if (!m_Private->m_BorderVisible) {
+            if (!m_Private->m_AutoFillBackground) {
+                int x = (width() - m_Private->m_NormalPixmap->width()) >> 1;
+                int y = (height() - m_Private->m_NormalPixmap->height()) >> 1;
+                painter.drawPixmap(x, y, *m_Private->m_CheckPixmap);
+            } else {
+                painter.drawPixmap(this->rect(), *m_Private->m_CheckPixmap);
+            }
+        }
+        else {
+            int w = m_Private->m_BorderWidth;
+            painter.setPen(QPen(QBrush(m_Private->m_BorderCheckedColor), w));
+            painter.drawRect(this->rect());
+            painter.drawPixmap(w, w, this->width()-w*2, this->height()-w*2, *m_Private->m_CheckPixmap);
+        }
     }
 }
 
@@ -223,6 +281,11 @@ BmpButtonPrivate::BmpButtonPrivate(BmpButton* parent)
     m_Timer = NULL;
     m_Filter = false;
     m_LongPressRestore = true;
+    m_AutoFillBackground = false;
+    m_BorderVisible = false;
+    m_BorderCheckedColor.setRgb(0,168,255);
+    m_BorderNormalColor.setRgb(255, 255, 255);
+    m_BorderWidth = 2;
 }
 
 BmpButtonPrivate::~BmpButtonPrivate()
@@ -234,7 +297,8 @@ void BmpButtonPrivate::initializeTimer()
     if (NULL == m_Timer) {
         m_Timer = new QTimer(m_Parent);
         m_Timer->setSingleShot(true);
-        m_Timer->setInterval(1500);
+       // m_Timer->setInterval(1500);
+        m_Timer->setInterval(800);
         QObject::connect(m_Timer,  SIGNAL(timeout()),
                          m_Parent, SLOT(onTimeout()));
     }

@@ -1,5 +1,5 @@
 #! /bin/sh
-QMAKE=/opt/external-toolchain/qt4.7.4/bin/qmake
+QMAKE=/usr/local/Trolltech/Qt-4.7.4/bin/qmake
 build()
 {
 	cd $1 && $QMAKE && make

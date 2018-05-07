@@ -35,6 +35,9 @@ static const QString CarLink("CarLink");
 static const QString Logo("Logo");
 static const QString BrakeStatus("BrakeStatus");
 static const QString ReverseMute("ReverseMute");
+static const QString VideoWarningStatus("VideoWarningStatus");
+static const QString PhoneLinkType("PhoneLinkType");
+static const QString AutoLinkPhone("AutoLinkPhone");
 
 static const unsigned char brightnessStep(3);
 static const unsigned char maxbrightness(43);
@@ -110,7 +113,7 @@ bool SettingPersistent::restoreBrightness()
 {
     // int ret = arkapi_set_layer_brightness(OSD1_LAYER, 45 + 14 * getBrightness());
     // return (0 == ret);
-    int ret = arkapi_set_layer_brightness(OSD1_LAYER, 100);//Ĭlayer brightness
+   // int ret = arkapi_set_layer_brightness(OSD1_LAYER, 100);//Ĭlayer brightness
     
     int brightness = maxbrightness - getBrightness()*brightnessStep;
 
@@ -133,17 +136,19 @@ bool SettingPersistent::restoreContrast()
 {
     // int ret = arkapi_set_layer_contrast(OSD1_LAYER, 45 + 14 * getContrast());
     // printf("%s %d\n", __func__, minimumConstrass + constrasStep * getContrast());
-    int ret = arkapi_set_layer_contrast(OSD1_LAYER, minimumConstrass + constrasStep * getContrast());
-    return (0 == ret);
+  //  int ret = arkapi_set_layer_contrast(OSD1_LAYER, minimumConstrass + constrasStep * getContrast());
+//return (0 == ret);
+    return false;
 }
 
 bool SettingPersistent::restoreSaturation()
 {
     // int ret = arkapi_set_layer_saturation(OSD1_LAYER, 45 + 14 * getSaturation());
     // printf("%s %d\n", __func__, minimumSaturation + saturationStep * getSaturation());
-    int ret = arkapi_set_layer_saturation(OSD1_LAYER, minimumSaturation + saturationStep * getSaturation());
+    //int ret = arkapi_set_layer_saturation(OSD1_LAYER, minimumSaturation + saturationStep * getSaturation());
 
-    return (0 == ret);
+    //return (0 == ret);
+    return false;
 }
 
 bool SettingPersistent::illDetectSetBrightness(bool on)
@@ -267,6 +272,55 @@ void SettingPersistent::setReversingRadar(const int value)
     g_Settings->setValue(Radar, value);
     g_Settings->sync();
 }
+
+void SettingPersistent::setVideoWarningStatus(const bool value)
+{
+    g_Settings->setValue(VideoWarningStatus, value);
+    g_Settings->sync();
+}
+
+bool SettingPersistent::getVideoWarningStatus(const bool reload)
+{
+    bool flag(true);
+    if (reload) {
+        g_Settings->sync();
+    }
+    bool ret = g_Settings->value(VideoWarningStatus, flag).toBool();
+    return ret;
+}
+
+void SettingPersistent::setPhoneLinkType(const int value)
+{
+    g_Settings->setValue(PhoneLinkType, value);
+    g_Settings->sync();
+}
+
+int SettingPersistent::getPhoneLinkType(const bool reload)
+{
+    int flag(-1);
+    if (reload) {
+        g_Settings->sync();
+    }
+    int ret = g_Settings->value(PhoneLinkType, flag).toInt();
+    return ret;
+}
+
+void SettingPersistent::setAutoLinkPhone(const bool value)
+{
+    g_Settings->setValue(AutoLinkPhone, value);
+    g_Settings->sync();
+}
+
+bool SettingPersistent::getAutoLinkPhone(const bool reload)
+{
+    bool flag(true);
+    if (reload) {
+        g_Settings->sync();
+    }
+    bool ret = g_Settings->value(AutoLinkPhone, flag).toBool();
+    return ret;
+}
+
 
 void SettingPersistent::setReversingAssistTrack(const int value)
 {

@@ -120,6 +120,10 @@ public:
     static int getCarLinkType(const bool reload = false);
     static int getLogoType(const bool reload = false);
     static bool getReverseMute(const bool reload = false);
+    static bool getVideoWarningStatus(const bool reload = false);
+    static int getPhoneLinkType(const bool reload = false);
+    static bool getAutoLinkPhone(const bool reload = false);
+
     static void setLanguage(const int value);
     static void setBrightness(const int value);
     static void setContrast(const int value);
@@ -137,6 +141,10 @@ public:
     static bool illDetectSetBrightness(const bool on);
     static void setCurrentBrakeStatus(const bool status);
     static void setReverseMute(const bool value);
+    static void setVideoWarningStatus(bool status);
+    static void setPhoneLinkType(const int value);
+    static void setAutoLinkPhone(const bool value);
+
     static void reset();
 };
 

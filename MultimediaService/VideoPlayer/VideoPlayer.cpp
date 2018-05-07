@@ -503,7 +503,7 @@ void VideoPlayerPrivate::playVideoIndex(const DeviceWatcherType type, const int 
         if (0 != access("/tmp/video", F_OK)) {
             int videofd = open("/dev/fb1", O_RDONLY);
             if (videofd >= 0) {
-                arkapi_show_fb(videofd, 0);
+              //  arkapi_show_fb(videofd, 0);
                 close(videofd);
             } else {
                 perror("open fb1");
@@ -511,7 +511,7 @@ void VideoPlayerPrivate::playVideoIndex(const DeviceWatcherType type, const int 
             }
             videofd = open("/dev/fb4", O_RDONLY);
             if (videofd >= 0) {
-                arkapi_show_fb(videofd, 0);
+              //  arkapi_show_fb(videofd, 0);
                 close(videofd);
             } else {
                 perror("open fb4");

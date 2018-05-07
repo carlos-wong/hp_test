@@ -22,10 +22,10 @@
 #include <QDebug>
 #include <QImage>
 
-QString codecConvert(TagLib::String inStr)
-{
-    return QString::fromStdString(inStr.toCString(true));
-}
+//QString codecConvert(TagLib::String inStr)
+//{
+//    return QString::fromStdString(inStr.toCString(true));
+//}
 
 class MusicInformationPrivate
 {
@@ -81,68 +81,5 @@ MusicInformationPrivate::~MusicInformationPrivate()
 
 void MusicInformationPrivate::parseString(const QString &path)
 {
-    m_Title.clear();
-    m_Artist.clear();
-    m_Album.clear();
-    QFileInfo fileInfo(path);
-    if (fileInfo.suffix().contains(QString("mp3"), Qt::CaseInsensitive)
-            || (fileInfo.suffix().contains(QString("mp2"), Qt::CaseInsensitive))) {
-        TagLib::FileRef fileRef(path.toLocal8Bit().data(), false);
-        if ((!fileRef.isNull())
-                && (NULL != fileRef.tag())) {
-            TagLib::Tag* tag = fileRef.tag();
-            m_Title = codecConvert(tag->title());
-            m_Artist = codecConvert(tag->artist());
-            m_Album = codecConvert(tag->album());
-        }
-        //        if (NULL != fileRef.ID3v2Tag()) {
-        //            TagLib::ID3v2::Tag* tag = fileRef.ID3v2Tag();
-        //            m_Title = codecConvert(tag->title());
-        //            m_Artist = codecConvert(tag->artist());
-        //            m_Album = codecConvert(tag->album());
-        //        } else if (NULL != fileRef.ID3v1Tag()) {
-        //            TagLib::ID3v1::Tag* tag = fileRef.ID3v1Tag();
-        //            m_Title = codecConvert(tag->title());
-        //            m_Artist = codecConvert(tag->artist());
-        //            m_Album = codecConvert(tag->album());
-        //        } else if (NULL != fileRef.APETag()) {
-        //            TagLib::APE::Tag* tag = fileRef.APETag();
-        //            m_Title = codecConvert(tag->title());
-        //            m_Artist = codecConvert(tag->artist());
-        //            m_Album = codecConvert(tag->album());
-        //        }
-    } else if (fileInfo.suffix().contains(QString("aac"), Qt::CaseInsensitive)
-               || fileInfo.suffix().contains(QString("m4a"), Qt::CaseInsensitive)) {
-        TagLib::MP4::File fileRef(path.toLocal8Bit().constData());
-        if (NULL != fileRef.tag()) {
-            TagLib::Tag* tag = fileRef.tag();
-            m_Title = codecConvert(tag->title());
-            m_Artist = codecConvert(tag->artist());
-            m_Album = codecConvert(tag->album());
-        }
-    } else if (fileInfo.suffix().contains(QString("flac"), Qt::CaseInsensitive)) {
-        TagLib::FLAC::File fileRef(path.toLocal8Bit().constData());
-        if (NULL != fileRef.tag()) {
-            TagLib::Tag* tag = fileRef.tag();
-            m_Title = codecConvert(tag->title());
-            m_Artist = codecConvert(tag->artist());
-            m_Album = codecConvert(tag->album());
-        }
-    } else if (fileInfo.suffix().contains(QString("ape"), Qt::CaseInsensitive)) {
-        TagLib::APE::File fileRef(path.toLocal8Bit().constData());
-        if (NULL != fileRef.APETag()) {
-            TagLib::APE::Tag* tag = fileRef.APETag();
-            m_Title = codecConvert(tag->title());
-            m_Artist = codecConvert(tag->artist());
-            m_Album = codecConvert(tag->album());
-        }
-    } else if (fileInfo.suffix().contains(QString("ogg"), Qt::CaseInsensitive)) {
-        TagLib::Ogg::Vorbis::File fileRef(path.toLocal8Bit().constData());
-        if (NULL != fileRef.tag()) {
-            TagLib::Ogg::XiphComment* tag = fileRef.tag();
-            m_Title = codecConvert(tag->title());
-            m_Artist = codecConvert(tag->artist());
-            m_Album = codecConvert(tag->album());
-        }
-    }
+
 }

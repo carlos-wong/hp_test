@@ -132,7 +132,7 @@ DeviceWatcherPrivate::DeviceWatcherPrivate(DeviceWatcher *parent)
 DeviceWatcherPrivate::~DeviceWatcherPrivate()
 {
     if (m_InitDetach) {
-        uninitDetach();
+      //  uninitDetach();
         m_InitDetach = false;
     }
 }
@@ -235,10 +235,11 @@ void DeviceWatcherPrivate::diskDeviceAdd(const QString &path)
                 system("mkdir -p /media/udisk");
             }
             if (!m_InitDetach) {
-                initDetach();
+               // initDetach();
                 m_InitDetach = true;
             }
-            const QString temp(detach(path.toLocal8Bit().constData()));
+           // const QString temp(detach(path.toLocal8Bit().constData()));
+            const QString temp("");
             QString argument(" ");
             if (temp.contains(QString("FAT (32 bit)"))) {
                 argument = QString(" -o utf8 ");
@@ -274,10 +275,11 @@ void DeviceWatcherPrivate::diskDeviceAdd(const QString &path)
                 system("mkdir -p /media/sdisk");
             }
             if (!m_InitDetach) {
-                initDetach();
+               // initDetach();
                 m_InitDetach = true;
             }
-            const QString temp(detach(path.toLocal8Bit().constData()));
+          //  const QString temp(detach(path.toLocal8Bit().constData()));
+            const QString temp("");
             QString argument(" ");
             if (temp.contains(QString("FAT (32 bit)"))) {
                 argument = QString(" -o utf8 ");

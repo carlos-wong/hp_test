@@ -26,8 +26,8 @@ public:
     ~MultimediaService();
 #ifdef gcc
 public slots:
-    void usbToggle(const int action);
-    void sdToggle(const int action);
+   // void usbToggle(const int action);
+   // void sdToggle(const int action);
 #endif
 public slots:
     void synchronize();

@@ -11,6 +11,7 @@
 #include <QImageReader>
 #include <QBuffer>
 #include <QDomDocument>
+#include <QDebug>
 
 class ImagePlayerPrivate
 {
@@ -286,6 +287,7 @@ void ImagePlayerPrivate::createSDFileNamesXml()
 
 void ImagePlayerPrivate::playListViewIndex(const DeviceWatcherType type, const int index)
 {
+     qDebug()<< "============5============void ImagePlayerPrivate::playListViewIndex()";
     QList<QString> temp = getPathList(type);
     if ((temp.size() > index)
             && (QFile(temp.at(index))).exists()) {
@@ -317,6 +319,7 @@ void ImagePlayerPrivate::playPreviousListViewIndex()
 
 void ImagePlayerPrivate::playNextListViewIndex()
 {
+    qDebug()<< "============4============void ImagePlayerPrivate::playNextListViewIndex()";
     m_RotateAngle = 0;
     int lastIndex = m_PlayIndex;
     QList<QString> temp = getPathList(m_DiskType);

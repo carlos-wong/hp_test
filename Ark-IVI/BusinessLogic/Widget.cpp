@@ -125,6 +125,7 @@ WidgetPrivate::WidgetPrivate(Widget* parent)
     m_HolderType = Widget::T_Undefine;
     M_Type = Widget::T_Radio;
     m_Rcc = QString("/usr/share/Launcher/WSVGA/WSVGA.rcc");
+//    m_Rcc = QString("/usr/bin/WSVGA.rcc");
     m_WidthScalabilityFactor = 1.000000f;
     m_HeightScalabilityFactor = 1.000000f;
     initialize();
