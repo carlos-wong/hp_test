@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Languages/Launcher_CN.qm</file>
+        <file>Languages/Launcher_EN.qm</file>
+    </qresource>
+</RCC>
