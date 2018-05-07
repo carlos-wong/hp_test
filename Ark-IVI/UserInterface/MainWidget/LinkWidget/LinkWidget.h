@@ -9,7 +9,7 @@
 
 class LinkWidgetPrivate;
 class LinkWidget
-        : private QWidget
+        : public QWidget
 {
     Q_OBJECT
     Q_DISABLE_COPY(LinkWidget)

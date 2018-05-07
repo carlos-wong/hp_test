@@ -36,6 +36,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <errno.h>
+#include <QMap>
 
 class MainWidgetPrivate
 {
@@ -62,6 +63,8 @@ public:
     void initializeSettingWidget();
     void initializeVolumeWidget();
     void connectAllSlots();
+    void recordChildVisible(QWidget* obj);
+    void restoreChildVisible(QWidget* obj);
     QSocketNotifier* m_SocketNotifier;
     BmpWidget* m_Background;
     HomeWidget* m_HomeWidget;
@@ -80,6 +83,7 @@ public:
     StatusBarWidget* m_StatusBarWidget;
     VolumeWidget* m_VolumeWidget;
     bool m_DisplayVisible;
+    QMap<QWidget*, bool> m_ChildrenVisibleMap;
 private:
     MainWidget* m_Parent;
 };
@@ -266,32 +270,78 @@ void MainWidget::onThemeChange(const int type)
 static void initializeRunnableCallback(void *paramater)
 {
     system("insmod /lib/modules/3.4.0/kernel/drivers/usb/musb/musb_hdrc.ko");
-    usleep(5);
+    usleep(10);
     system("insmod /lib/modules/3.4.0/kernel/drivers/usb/musb/ark1680_musb.ko");
-    usleep(5);
-    system("insmod /lib/modules/3.4.0/kernel/drivers/usb/gadget/g_ncm.ko");
-    usleep(5);
+    usleep(10);
+    if (QString(qgetenv("CARPLAY_USB_INDEX")).contains(QString("1"))) {
+        system("insmod /lib/modules/3.4.0/kernel/drivers/usb/gadget/g_zero.ko");
+        usleep(10);
+        system("insmod /lib/modules/3.4.0/kernel/drivers/usb/gadget/g_ncm.ko");
+        usleep(10);
+    }else{
+        system("insmod /lib/modules/3.4.0/kernel/drivers/usb/gadget/g_ncm.ko");
+        usleep(10);
+        system("insmod /lib/modules/3.4.0/kernel/drivers/usb/gadget/g_zero.ko");
+        usleep(10);  
+    }
+
     system("insmod /lib/modules/3.4.0/kernel/drivers/ark/sdmmc/ark_dw_mmc.ko");
-    usleep(5);
+    usleep(10);
     system("echo otg > /sys/devices/platform/musb-ark1680.0/musb-hdrc.0/mode");
+    usleep(10);
+    system("echo otg > /sys/devices/platform/musb-ark1680.1/musb-hdrc.1/mode");
+    usleep(10);
     if (QString(qgetenv("PROTOCOL_ID")).contains(QString("yaoxi"))) {
-        usleep(5);
+        usleep(10);
         system("insmod /lib/modules/3.4.0/kernel/drivers/usb/gadget/g_webcam.ko");
-        usleep(5);
+        usleep(10);
         system("echo otg > /sys/devices/platform/musb-ark1680.1/musb-hdrc.1/mode");
     }
+
+    memallocload();
+    driverload();
 }
 
 void MainWidget::onStartComplete()
 {
     g_Radio->initialize();
-    m_Private->initializeNetlink();
-    CustomRunnable* runnable = new CustomRunnable();
-    runnable->setCallbackFunction(initializeRunnableCallback, NULL);
-    QThreadPool::globalInstance()->start(runnable);
-    connectSignalAndSlotByNamesake(g_Widget, this, ARKRECEIVER(onWidgetTypeChange(const Widget::Type, const Widget::Type, const QString &)));
+
+    m_Private->initializeRadioWidget();
+    // m_Private->initializeSDDiskWidget();
+    // m_Private->initializeUSBDiskWidget();
     m_Private->initializeVolumeWidget();
     m_Private->initializeBluetoothWidget();
+    m_Private->initializeNetlink();
+    connectSignalAndSlotByNamesake(g_Widget, this, ARKRECEIVER(onWidgetTypeChange(const Widget::Type, const Widget::Type, const QString &)));
+
+#ifndef DESKTOP_AMD64
+    struct ArkControl ctrl;
+    ctrl.type = ACLT_Req_bt_status;
+    struct ArkProtocol bt_status;
+    bt_status.type = AT_Control;
+    bt_status.data = (void*)&ctrl;
+    bt_status.prio = AP_PRIO_NORMAL;
+    ark_protocol_send(&bt_status);
+
+    struct ArkControl ctrl2;
+    ctrl2.type = ACLT_Req_bt_status;
+    struct ArkProtocol bt_status2;
+    bt_status2.type = AT_Control;
+    bt_status2.data = (void*)&ctrl;
+    bt_status2.prio = AP_PRIO_NORMAL;
+    ark_protocol_send(&bt_status2);
+#endif
+
+    m_Private->initializeLinkWidget();
+    qDebug() << "++++++++onStartComplete+++++++++++++++!";
+
+#ifdef DESKTOP_AMD64
+    m_Private->initializeMusicWidget();
+    m_Private->initializeVideoWidget();
+    m_Private->initializeImageWidget();
+    m_Private->initializeSDDiskWidget();
+    m_Private->initializeUSBDiskWidget();
+#endif
 }
 
 void MainWidget::onActivated()
@@ -328,6 +378,44 @@ void MainWidget::onActivated()
         g_Multimedia->startMultimedia();
         m_Private->m_SocketNotifier->setEnabled(false);
         ::close(m_Private->m_SocketNotifier->socket());
+    }
+}
+
+void MainWidget::onReveringWidgetVisibleChanged(bool visible)
+{
+    if (visible) {
+        m_Private->recordChildVisible(m_Private->m_Background);
+        m_Private->recordChildVisible(m_Private->m_StatusBarWidget);
+        m_Private->recordChildVisible(m_Private->m_HomeWidget);
+        m_Private->recordChildVisible(m_Private->m_RadioWidget);
+        m_Private->recordChildVisible(m_Private->m_BluetoothWidget);
+        m_Private->recordChildVisible(m_Private->m_USBDiskWidget);
+        m_Private->recordChildVisible(m_Private->m_SDDiskWidget);
+        m_Private->recordChildVisible(m_Private->m_MusicWidget);
+        m_Private->recordChildVisible(m_Private->m_ImageWidget);
+        m_Private->recordChildVisible(m_Private->m_VideoWidget);
+//        m_Private->recordChildVisible(m_Private->m_LinkWidget);
+        m_Private->recordChildVisible(m_Private->m_AUXWidget);
+        m_Private->recordChildVisible(m_Private->m_CameraWidget);
+        m_Private->recordChildVisible(m_Private->m_SteeringWidget);
+        m_Private->recordChildVisible(m_Private->m_SettingWidget);
+    }
+    else {
+        m_Private->restoreChildVisible(m_Private->m_Background);
+        m_Private->restoreChildVisible(m_Private->m_StatusBarWidget);
+        m_Private->restoreChildVisible(m_Private->m_HomeWidget);
+        m_Private->restoreChildVisible(m_Private->m_RadioWidget);
+        m_Private->restoreChildVisible(m_Private->m_BluetoothWidget);
+        m_Private->restoreChildVisible(m_Private->m_USBDiskWidget);
+        m_Private->restoreChildVisible(m_Private->m_SDDiskWidget);
+        m_Private->restoreChildVisible(m_Private->m_MusicWidget);
+        m_Private->restoreChildVisible(m_Private->m_ImageWidget);
+        m_Private->restoreChildVisible(m_Private->m_VideoWidget);
+//        m_Private->restoreChildVisible(m_Private->m_LinkWidget);
+        m_Private->restoreChildVisible(m_Private->m_AUXWidget);
+        m_Private->restoreChildVisible(m_Private->m_CameraWidget);
+        m_Private->restoreChildVisible(m_Private->m_SteeringWidget);
+        m_Private->restoreChildVisible(m_Private->m_SettingWidget);
     }
 }
 
@@ -424,8 +512,14 @@ void MainWidgetPrivate::initializeBasicWidget()
     onThemeChange(SettingPersistent::getThemeType());
     g_Widget->geometryFit(0, 0, 800, 480, m_Background);
     m_Background->setVisible(true);
-    initializeRadioWidget();
+//    initializeRadioWidget();
     initializeStatusBarWidget();
+    initializeHomeWidget();
+
+    CustomRunnable* runnable = new CustomRunnable();
+    runnable->setCallbackFunction(initializeRunnableCallback, NULL);
+    QThreadPool::globalInstance()->start(runnable, 1);
+
     m_Parent->setVisible(true);
 }
 
@@ -497,7 +591,7 @@ void MainWidgetPrivate::initializeLinkWidget()
 {
     if (NULL == m_LinkWidget) {
         m_LinkWidget = new LinkWidget(m_Parent);
-        g_Widget->setWidgetType(Widget::T_Link, Widget::T_ViewPaper1, WidgetStatus::RequestShow);
+//        g_Widget->setWidgetType(Widget::T_Link, Widget::T_ViewPaper1, WidgetStatus::RequestShow);
     }
 }
 
@@ -544,4 +638,19 @@ void MainWidgetPrivate::connectAllSlots()
 {
     QObject::connect(g_Setting, ARKSENDER(onStartComplete()),
                      m_Parent,  ARKRECEIVER(onStartComplete()));
+}
+
+void MainWidgetPrivate::recordChildVisible(QWidget *obj)
+{
+    if (NULL != obj) {
+        m_ChildrenVisibleMap[obj] = obj->isVisible();
+        obj->hide();
+    }
+}
+
+void MainWidgetPrivate::restoreChildVisible(QWidget *obj)
+{
+    if (NULL != obj) {
+        obj->setVisible(m_ChildrenVisibleMap.value(obj));
+    }
 }

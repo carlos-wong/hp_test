@@ -8,6 +8,7 @@
 #include "AutoConnect.h"
 #include "UserInterfaceUtility.h"
 #include <QDomDocument>
+#include "BmpWidget.h"
 
 namespace SourceString {
 static const QString Unsupport(QObject::tr("Unsupport..."));
@@ -38,6 +39,7 @@ public:
     bool m_RequestShow;
     bool m_HardKeyHandler;
     MusicPlayerPlayStatus m_MusicPlayerPlayStatus;
+    BmpWidget* m_Background;
 private:
     MusicWidget* m_Parent;
 };
@@ -115,6 +117,9 @@ void MusicWidget::onWidgetTypeChange(const Widget::Type destinationType, const W
     case Widget::T_USBMusic: {
         if (WidgetStatus::RequestShow == status) {
             qDebug() << __PRETTY_FUNCTION__ << __LINE__ << requestType << m_Private->m_USBDiskLastIndex << m_Private->m_DeviceWatcherType;
+#ifdef DESKTOP_AMD64
+            g_Widget->setWidgetType(Widget::T_USBMusic, Widget::T_Undefine, WidgetStatus::Show);
+#else
             if ((Widget::T_USBDisk == requestType)
                     && (-1 != m_Private->m_USBDiskLastIndex)
                     && (DWT_USBDisk != m_Private->m_DeviceWatcherType)) {
@@ -141,6 +146,7 @@ void MusicWidget::onWidgetTypeChange(const Widget::Type destinationType, const W
                     g_Widget->setWidgetType(m_Private->m_Type, requestType, WidgetStatus::Show);
                 }
             }
+#endif
         } else if (WidgetStatus::Show == status) {
             qDebug() << __PRETTY_FUNCTION__ << __LINE__;
             g_Multimedia->musicInitialize();
@@ -360,7 +366,10 @@ MusicWidgetPrivate::MusicWidgetPrivate(MusicWidget *parent)
     m_USBDiskElapsed = 0;
     m_RequestShow = false;
     m_HardKeyHandler = false;
-    m_MusicPlayerPlayStatus = MPPS_Exit;
+    m_MusicPlayerPlayStatus = MPPS_Exit;  
+    m_Background = new BmpWidget(m_Parent);
+    m_Background->setBackgroundBmpPath(QString(":/Images/hw_01_main_background.png"));
+    g_Widget->geometryFit(0, 0, 800, 480, m_Background);
     initializeParent();
     connectAllSlots();
 }

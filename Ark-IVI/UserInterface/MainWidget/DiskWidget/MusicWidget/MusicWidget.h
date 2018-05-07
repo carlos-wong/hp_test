@@ -10,7 +10,7 @@
 
 class MusicWidgetPrivate;
 class MusicWidget
-        : private QWidget
+        : public QWidget
 {
     Q_OBJECT
     Q_DISABLE_COPY(MusicWidget)

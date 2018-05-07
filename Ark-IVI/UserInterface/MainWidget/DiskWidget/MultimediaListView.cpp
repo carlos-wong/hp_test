@@ -170,9 +170,12 @@ MultimediaDelegate::~MultimediaDelegate()
 
 void MultimediaDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    if (!m_Rules.isNull()) {
-        painter->drawPixmap(0, option.rect.y() + option.rect.height() - 2, *m_Rules);
-    }
+//    if (!m_Rules.isNull()) {
+//        painter->drawPixmap(0, option.rect.y() + option.rect.height() - 2, *m_Rules);
+//    }
+    painter->setPen(Qt::white);
+    int lineY = option.rect.y() + option.rect.height() - 2;
+    painter->drawLine(0, lineY, option.rect.width(), lineY);
     MultimediaVariant variant = qVariantValue<MultimediaVariant>(index.data(Qt::DisplayRole));
     QString text = QString::number(index.row() + 1) + QString(". ") + variant.m_Text;
     QRect textRect = option.rect.adjusted(75 * g_Widget->widthScalabilityFactor(), 0, -75 * g_Widget->widthScalabilityFactor(), 0);
@@ -184,9 +187,18 @@ void MultimediaDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
         painter->setPen(Qt::white);
     }
     if (m_PressIndex == index) {
-        if (!m_Press.isNull()) {
-            painter->drawPixmap(0, option.rect.y(), *m_Press);
+//        if (!m_Press.isNull()) {
+//            painter->drawPixmap(0, option.rect.y(), *m_Press);
+//        }
+        QColor c(8,121,165);
+        painter->setPen(c);
+        painter->setBrush(c);
+        if (index.row() == 0) {
+             painter->drawRect(option.rect.x()+1, option.rect.y()+2, option.rect.width()-2, option.rect.height()-5);
+        }else {
+             painter->drawRect(option.rect.x()+1, option.rect.y(), option.rect.width()-2, option.rect.height()-3);
         }
+        painter->setPen(Qt::white);
     }
     painter->drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, text);
 }

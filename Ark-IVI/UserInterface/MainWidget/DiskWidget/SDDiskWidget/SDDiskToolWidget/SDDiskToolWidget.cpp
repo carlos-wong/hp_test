@@ -54,11 +54,11 @@ void SDDiskToolWidget::onWidgetTypeChange(const Widget::Type destinationType, co
             m_Private->m_ImageBtn->setStatus(BmpButton::B_Normal);
             m_Private->m_VideoBtn->setStatus(BmpButton::B_Normal);
             m_Private->m_MusicBtn->setVisible(true);
-            m_Private->m_MusicText->setVisible(true);
+//            m_Private->m_MusicText->setVisible(true);
             m_Private->m_ImageBtn->setVisible(true);
-            m_Private->m_ImageText->setVisible(true);
+//            m_Private->m_ImageText->setVisible(true);
             m_Private->m_VideoBtn->setVisible(true);
-            m_Private->m_VideoText->setVisible(true);
+//            m_Private->m_VideoText->setVisible(true);
             setVisible(true);
         }
         break;
@@ -69,11 +69,11 @@ void SDDiskToolWidget::onWidgetTypeChange(const Widget::Type destinationType, co
             m_Private->m_ImageBtn->setStatus(BmpButton::B_Check);
             m_Private->m_VideoBtn->setStatus(BmpButton::B_Normal);
             m_Private->m_MusicBtn->setVisible(true);
-            m_Private->m_MusicText->setVisible(true);
+//            m_Private->m_MusicText->setVisible(true);
             m_Private->m_ImageBtn->setVisible(true);
-            m_Private->m_ImageText->setVisible(true);
+//            m_Private->m_ImageText->setVisible(true);
             m_Private->m_VideoBtn->setVisible(true);
-            m_Private->m_VideoText->setVisible(true);
+//            m_Private->m_VideoText->setVisible(true);
             setVisible(true);
         }
         break;
@@ -84,11 +84,11 @@ void SDDiskToolWidget::onWidgetTypeChange(const Widget::Type destinationType, co
             m_Private->m_ImageBtn->setStatus(BmpButton::B_Normal);
             m_Private->m_VideoBtn->setStatus(BmpButton::B_Check);
             m_Private->m_MusicBtn->setVisible(true);
-            m_Private->m_MusicText->setVisible(true);
+//            m_Private->m_MusicText->setVisible(true);
             m_Private->m_ImageBtn->setVisible(true);
-            m_Private->m_ImageText->setVisible(true);
+//            m_Private->m_ImageText->setVisible(true);
             m_Private->m_VideoBtn->setVisible(true);
-            m_Private->m_VideoText->setVisible(true);
+//            m_Private->m_VideoText->setVisible(true);
             setVisible(true);
         }
         break;
@@ -196,38 +196,35 @@ SDDiskToolWidgetPrivate::~SDDiskToolWidgetPrivate()
 void SDDiskToolWidgetPrivate::initialize()
 {
     m_MusicBtn = new BmpButton(m_Parent);
-    m_MusicBtn->setNormalBmpPath(QString(":/Images/MultimediaToolWidgetIMusicNormal.png"));
-    m_MusicBtn->setPressBmpPath(QString(":/Images/MultimediaToolWidgetIMusicNormal.png"));
-    m_MusicBtn->setCheckBmpPath(QString(":/Images/MultimediaToolWidgetIMusicPress.png"));
+    m_MusicBtn->setNormalBmpPath(QString(":/Images/hw_01_multimedia_music_list_normal.png"));
+    m_MusicBtn->setPressBmpPath(QString(":/Images/hw_01_multimedia_music_list_normal.png"));
+    m_MusicBtn->setCheckBmpPath(QString(":/Images/hw_01_multimedia_music_list_checked.png"));
     g_Widget->geometryFit(23, 18, 170, 116, m_MusicBtn);
     m_MusicBtn->setVisible(true);
-
-    m_ImageBtn = new BmpButton(m_Parent);
-    m_ImageBtn->setNormalBmpPath(QString(":/Images/MultimediaToolWidgetImageNormal.png"));
-    m_ImageBtn->setPressBmpPath(QString(":/Images/MultimediaToolWidgetImageNormal.png"));
-    m_ImageBtn->setCheckBmpPath(QString(":/Images/MultimediaToolWidgetImagePress.png"));
-    g_Widget->geometryFit(23, 144, 170, 116, m_ImageBtn);
-    m_ImageBtn->setVisible(true);
-
     m_VideoBtn = new BmpButton(m_Parent);
-    m_VideoBtn->setNormalBmpPath(QString(":/Images/MultimediaToolWidgetIVideoNormal.png"));
-    m_VideoBtn->setPressBmpPath(QString(":/Images/MultimediaToolWidgetIVideoNormal.png"));
-    m_VideoBtn->setCheckBmpPath(QString(":/Images/MultimediaToolWidgetIVideoPress.png"));
-    g_Widget->geometryFit(23, 270, 170, 116, m_VideoBtn);
+    m_VideoBtn->setNormalBmpPath(QString(":/Images/hw_01_multimedia_video_list_normal.png"));
+    m_VideoBtn->setPressBmpPath(QString(":/Images/hw_01_multimedia_video_list_normal.png"));
+    m_VideoBtn->setCheckBmpPath(QString(":/Images/hw_01_multimedia_video_list_checked.png"));
+    g_Widget->geometryFit(23, 144, 170, 116, m_VideoBtn);
     m_VideoBtn->setVisible(true);
-
+    m_ImageBtn = new BmpButton(m_Parent);
+    m_ImageBtn->setNormalBmpPath(QString(":/Images/hw_01_multimedia_image_list_normal.png"));
+    m_ImageBtn->setPressBmpPath(QString(":/Images/hw_01_multimedia_image_list_normal.png"));
+    m_ImageBtn->setCheckBmpPath(QString(":/Images/hw_01_multimedia_image_list_checked.png"));
+    g_Widget->geometryFit(23, 270, 170, 116, m_ImageBtn);
+    m_ImageBtn->setVisible(true);
     m_MusicText = new TextWidget(m_MusicBtn);
     g_Widget->geometryFit(0, 61, 149, 47, m_MusicText);
     m_MusicText->setText(SourceString::Music);
-    m_MusicText->setVisible(true);
+    m_MusicText->setVisible(false);
     m_ImageText = new TextWidget(m_ImageBtn);
     g_Widget->geometryFit(0, 61, 149, 47, m_ImageText);
     m_ImageText->setText(SourceString::Image);
-    m_ImageText->setVisible(true);
+    m_ImageText->setVisible(false);
     m_VideoText = new TextWidget(m_VideoBtn);
     g_Widget->geometryFit(0, 61, 149, 47, m_VideoText);
     m_VideoText->setText(SourceString::Video);
-    m_VideoText->setVisible(true);
+    m_VideoText->setVisible(false);
 }
 
 void SDDiskToolWidgetPrivate::connectAllSlots()

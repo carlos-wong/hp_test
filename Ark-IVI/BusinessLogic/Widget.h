@@ -71,6 +71,7 @@ public:
     };
     void reset();
     QRect geometryFit(const int x, const int y, const int w, const int h, QWidget* widget = NULL);
+    void MoveToPoint(int x, int y, QWidget *widget);
     float widthScalabilityFactor();
     float heightScalabilityFactor();
     void acquireWidgetType(const Widget::Type type);

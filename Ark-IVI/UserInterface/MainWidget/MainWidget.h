@@ -23,6 +23,7 @@ protected slots:
 private slots:
     void onStartComplete();
     void onActivated();
+    void onReveringWidgetVisibleChanged(bool visible);
 private:
     friend class Launcher;
     friend class LauncherPrivate;

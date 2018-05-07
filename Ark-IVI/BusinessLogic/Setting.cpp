@@ -753,10 +753,9 @@ void SettingPrivate::onArkProtocol(const ArkProtocol *protocol)
                     }else if(ACS_ILLLightOff == car->status){
                         SettingPersistent::illDetectSetBrightness(false);
                     }
-                    return;
                 }else if(ACT_Brake == car->type){
-                    SettingPersistent::setCurrentBrakeStatus(car->status == ACS_BrakeOn?true:false);
-                    return;
+                    bool status = (car->status == ACS_BrakeOn?true:false);
+                    SettingPersistent::setCurrentBrakeStatus(status);
                 }
 
                 QMutexLocker lock(&m_Mutex);
@@ -797,9 +796,9 @@ void SettingPrivate::onArkProtocol(const ArkProtocol *protocol)
 
                         m_Parent->startAV(AVT_0, width, height);
                         m_Reversing = ACS_ReversingOn;
-                        if (0 != system("echo 24 0 > /proc/display")) {
-                            qDebug() << "hide osd1 fail!";
-                        }
+//                        if (0 != system("echo 24 0 > /proc/display")) {
+//                            qDebug() << "hide osd1 fail!";
+//                        }
                         if (DST_Off == g_Setting->getDisplayScreenType()) {
                             usleep(66666);
                             system("echo 30 > /sys/devices/platform/pwm-backlight/backlight/pwm-backlight/brightness");

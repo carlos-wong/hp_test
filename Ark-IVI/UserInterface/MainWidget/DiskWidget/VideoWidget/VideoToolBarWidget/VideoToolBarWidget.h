@@ -8,7 +8,7 @@
 
 class VideoToolBarWidgetPrivate;
 class VideoToolBarWidget
-        : private QWidget
+        : public QWidget
 {
     Q_OBJECT
     Q_DISABLE_COPY(VideoToolBarWidget)

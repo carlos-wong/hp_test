@@ -46,6 +46,16 @@ QRect Widget::geometryFit(const int x, const int y, const int w, const int h, QW
     return rect;
 }
 
+void Widget::MoveToPoint(int x, int y, QWidget *widget)
+{
+    initializePrivate();
+    int ax = x * m_Private->m_WidthScalabilityFactor;
+    int ay = y * m_Private->m_HeightScalabilityFactor;
+    if (NULL != widget) {
+        widget->move(ax, ay);
+    }
+}
+
 float Widget::widthScalabilityFactor()
 {
     initializePrivate();

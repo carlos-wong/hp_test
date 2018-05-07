@@ -129,22 +129,22 @@ void VideoSeekBarWidgetPrivate::initializeBasic()
     g_Widget->geometryFit(0, 30, 800, 30, m_Slider);
     m_Slider->setStyleSheet(QString("QSlider::groove:horizontal {"
                                     "height: " + QString::number(int(30 * g_Widget->heightScalabilityFactor())) + "px;"
-                                                                                                                  "background: transparent;"
-                                                                                                                  "}"
-                                                                                                                  "QSlider::handle:horizontal {"
-                                                                                                                  "width: " + QString::number(int(26 * g_Widget->widthScalabilityFactor())) + "px;"
-                                                                                                                                                                                              "image: url(:/Images/MultimediaSeekBaTickMarks.png);"
-                                                                                                                                                                                              "}"
-                                                                                                                                                                                              "QSlider::sub-page:horizontal {"
-                                                                                                                                                                                              "background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #003e61, stop: 1 #009ffa); "
-                                                                                                                                                                                              "margin: " + QString::number(int(10 * g_Widget->widthScalabilityFactor())) + "px 0px " + QString::number(int(10 * g_Widget->widthScalabilityFactor())) + "px 0px;"
-                                                                                                                                                                                                                                                                                                                                                       "border-radius: " + QString::number(int(5 * g_Widget->widthScalabilityFactor())) + "px;"
-                                                                                                                                                                                                                                                                                                                                                                                                                                          "}"
-                                                                                                                                                                                                                                                                                                                                                                                                                                          "QSlider::add-page:horizontal {"
-                                                                                                                                                                                                                                                                                                                                                                                                                                          "background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #616161, stop: 1 #2b2b2b); "
-                                                                                                                                                                                                                                                                                                                                                                                                                                          "margin: " + QString::number(int(10 * g_Widget->widthScalabilityFactor())) + "px 0px " + QString::number(int(10 * g_Widget->widthScalabilityFactor())) + "px 0px;"
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   "border-radius: " + QString::number(int(5 * g_Widget->widthScalabilityFactor())) + "px;"
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      "}"));
+                                    "background: transparent;"
+                                    "}"
+                                    "QSlider::handle:horizontal {"
+                                    "width: " + QString::number(int(26 * g_Widget->widthScalabilityFactor())) + "px;"
+                                    "image: url(:/Images/hw_01_multimedia_processbar_handdle.png);"
+                                    "}"
+                                    "QSlider::sub-page:horizontal {"
+                                    "background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #003e61, stop: 1 #009ffa); "
+                                    "margin: " + QString::number(int(10 * g_Widget->widthScalabilityFactor())) + "px 0px " + QString::number(int(10 * g_Widget->widthScalabilityFactor())) + "px 0px;"
+                                    "border-radius: " + QString::number(int(5 * g_Widget->widthScalabilityFactor())) + "px;"
+                                    "}"
+                                    "QSlider::add-page:horizontal {"
+                                    "background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #616161, stop: 1 #2b2b2b); "
+                                    "margin: " + QString::number(int(10 * g_Widget->widthScalabilityFactor())) + "px 0px " + QString::number(int(10 * g_Widget->widthScalabilityFactor())) + "px 0px;"
+                                    "border-radius: " + QString::number(int(5 * g_Widget->widthScalabilityFactor())) + "px;"
+                                    "}"));
     m_Slider->setVisible(true);
 }
 

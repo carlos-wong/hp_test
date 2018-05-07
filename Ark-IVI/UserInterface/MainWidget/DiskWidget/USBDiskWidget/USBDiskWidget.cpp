@@ -29,6 +29,7 @@ public:
     void initialize();
     void initializeTimer();
     void connectAllSlots();
+    BmpWidget* m_Background;
     USBDiskListViewWidget* m_USBDiskListViewWidget;
     USBDiskToolWidget* m_USBDiskToolWidget;
     MessageBox* m_USBDiskDeviceMessageBox;
@@ -52,7 +53,7 @@ USBDiskWidget::~USBDiskWidget()
 
 void USBDiskWidget::resizeEvent(QResizeEvent *event)
 {
-    g_Widget->geometryFit(0, 52, 800, 428, this);
+    g_Widget->geometryFit(0, 42, 800, 438, this);
 }
 
 void USBDiskWidget::onWidgetTypeChange(const Widget::Type destinationType, const Widget::Type requestType, const QString &status)
@@ -71,6 +72,9 @@ void USBDiskWidget::onWidgetTypeChange(const Widget::Type destinationType, const
     }
     case Widget::T_USBDisk: {
         if (WidgetStatus::RequestShow == status) {
+#ifdef DESKTOP_AMD64
+            g_Widget->setWidgetType(Widget::T_USBDiskMusic, Widget::T_ViewPaper0, WidgetStatus::RequestShow);
+#else
             if (Widget::T_USBDisk != m_Private->m_WidgetType) {
                 g_Widget->setWidgetType(m_Private->m_WidgetType, Widget::T_USBDisk, WidgetStatus::RequestShow);
             } else {
@@ -87,6 +91,7 @@ void USBDiskWidget::onWidgetTypeChange(const Widget::Type destinationType, const
                     }
                 }
             }
+#endif
         } else if (WidgetStatus::Show == status) {
             if ((DWS_Empty == m_Private->m_DeviceWatcherStatus)
                     || (DWS_Unsupport == m_Private->m_DeviceWatcherStatus)
@@ -452,6 +457,7 @@ void USBDiskWidget::onTimeout()
 USBDiskWidgetPrivate::USBDiskWidgetPrivate(USBDiskWidget *parent)
     : m_Parent(parent)
 {
+    m_Background = NULL;
     m_USBDiskListViewWidget = NULL;
     m_USBDiskToolWidget = NULL;
     m_USBDiskDeviceMessageBox = NULL;
@@ -470,6 +476,9 @@ USBDiskWidgetPrivate::~USBDiskWidgetPrivate()
 void USBDiskWidgetPrivate::initialize()
 {
     m_Parent->setVisible(false);
+    m_Background = new BmpWidget(m_Parent);
+    m_Background->setBackgroundBmpPath(QString(":/Images/hw_01_main_background.png"));
+    g_Widget->geometryFit(0, 0, 800, 438, m_Background);
     m_USBDiskListViewWidget = new USBDiskListViewWidget(m_Parent);
     m_USBDiskToolWidget = new USBDiskToolWidget(m_Parent);
     m_USBDiskDeviceMessageBox = new MessageBox(m_Parent);
@@ -477,7 +486,7 @@ void USBDiskWidgetPrivate::initialize()
     m_USBDiskDeviceMessageBox->setAutoHide(false);
     m_USBDiskDeviceMessageBox->setFontPointSize(15 * g_Widget->widthScalabilityFactor());
     m_USBDiskDeviceMessageBox->setBackgroundBmpPath(QString(":/Images/MessageBoxBackground.png"));
-    g_Widget->geometryFit(0, 0, 800, 428, m_USBDiskDeviceMessageBox);
+    g_Widget->geometryFit(0, 0, 800, 438, m_USBDiskDeviceMessageBox);
     m_USBDiskDeviceMessageBox->setVisible(true);
 }
 

@@ -43,6 +43,7 @@ public:
     MultimediaType m_MultimediaType;
     DeviceWatcherStatus m_DeviceWatcherStatus;
     QTimer* m_Timer;
+    BmpWidget* m_Background;
 private:
     SDDiskWidget* m_Parent;
 };
@@ -59,7 +60,7 @@ SDDiskWidget::~SDDiskWidget()
 
 void SDDiskWidget::resizeEvent(QResizeEvent *event)
 {
-    g_Widget->geometryFit(0, 52, 800, 428, this);
+    g_Widget->geometryFit(0, 42, 800, 438, this);
 }
 
 void SDDiskWidget::onWidgetTypeChange(const Widget::Type destinationType, const Widget::Type requestType, const QString &status)
@@ -77,6 +78,9 @@ void SDDiskWidget::onWidgetTypeChange(const Widget::Type destinationType, const 
     case Widget::T_SDDisk: {
         if (WidgetStatus::RequestShow == status) {
             qDebug() << __PRETTY_FUNCTION__ << __LINE__;
+#ifdef DESKTOP_AMD64
+            g_Widget->setWidgetType(Widget::T_SDDiskMusic, Widget::T_ViewPaper0, WidgetStatus::RequestShow);
+#else
             if (Widget::T_SDDisk != m_Private->m_WidgetType) {
                 qDebug() << __PRETTY_FUNCTION__ << __LINE__;
                 g_Widget->setWidgetType(m_Private->m_WidgetType, Widget::T_SDDisk, WidgetStatus::RequestShow);
@@ -99,6 +103,7 @@ void SDDiskWidget::onWidgetTypeChange(const Widget::Type destinationType, const 
                     }
                 }
             }
+#endif
         } else if (WidgetStatus::Show == status) {
             if ((DWS_Empty == m_Private->m_DeviceWatcherStatus)
                     || (DWS_Unsupport == m_Private->m_DeviceWatcherStatus)
@@ -494,6 +499,9 @@ SDDiskWidgetPrivate::~SDDiskWidgetPrivate()
 
 void SDDiskWidgetPrivate::initialize()
 {
+    m_Background = new BmpWidget(m_Parent);
+    m_Background->setBackgroundBmpPath(QString(":/Images/hw_01_main_background.png"));
+    g_Widget->geometryFit(0, 0, 800, 438, m_Background);
     m_SDDiskListViewWidget = new SDDiskListViewWidget(m_Parent);
     m_SDDiskToolWidget = new SDDiskToolWidget(m_Parent);
     m_SDDiskDeviceMessageBox = new MessageBox(m_Parent);
@@ -501,7 +509,7 @@ void SDDiskWidgetPrivate::initialize()
     m_SDDiskDeviceMessageBox->setAutoHide(false);
     m_SDDiskDeviceMessageBox->setFontPointSize(15 * g_Widget->widthScalabilityFactor());
     m_SDDiskDeviceMessageBox->setBackgroundBmpPath(QString(":/Images/MessageBoxBackground.png"));
-    g_Widget->geometryFit(0, 0, 800, 428, m_SDDiskDeviceMessageBox);
+    g_Widget->geometryFit(0, 0, 800, 438, m_SDDiskDeviceMessageBox);
     m_SDDiskDeviceMessageBox->setVisible(true);
 }
 

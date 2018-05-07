@@ -314,7 +314,7 @@ RadioWidgetPrivate::~RadioWidgetPrivate()
 void RadioWidgetPrivate::initializeParent()
 {
     Q_Q(RadioWidget);
-    q->setVisible(true);
+    q->setVisible(false);
 }
 
 void RadioWidgetPrivate::connectAllSlots()

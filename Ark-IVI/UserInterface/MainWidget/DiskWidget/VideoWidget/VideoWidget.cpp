@@ -18,6 +18,7 @@
 
 namespace SourceString {
 static const QString Unsupport(QObject::tr("Unsupport..."));
+static const QString PutDownHandBreak(QObject::tr("Please don't watch video while driving!"));
 }
 
 class VideoWidgetPrivate
@@ -33,6 +34,8 @@ public:
     void initializeToolBarWidget();
     void initializeMessageBox();
     void connectAllSlots();
+    void handleHandBreakNotReady();
+    void handleHandBreakReady();
     QString convertTime(const int time);
     TextWidget* m_TextWidget;
     VideoSeekBarWidget* m_VideoSeekBarWidget;
@@ -48,6 +51,7 @@ public:
     int m_USBDiskElapsed;
     bool m_RequestShow;
     bool m_HardKeyHandler;
+    bool m_IsHandBreak;
 private:
     VideoWidget* m_Parent;
 };
@@ -200,6 +204,9 @@ void VideoWidget::onWidgetTypeChange(const Widget::Type destinationType, const W
     case Widget::T_USBVideo: {
         if (WidgetStatus::RequestShow == status) {
             qDebug() << __PRETTY_FUNCTION__ << __LINE__ << m_Private->m_SDDiskLastIndex << m_Private->m_DeviceWatcherType << m_Private->m_USBDiskLastIndex;
+#ifdef DESKTOP_AMD64
+            g_Widget->setWidgetType(Widget::T_USBVideo, Widget::T_Undefine, WidgetStatus::Show);
+#else
             if ((Widget::T_USBDisk == requestType)
                     && (-1 != m_Private->m_USBDiskLastIndex)) {
                 qDebug() << __PRETTY_FUNCTION__ << __LINE__;
@@ -240,6 +247,7 @@ void VideoWidget::onWidgetTypeChange(const Widget::Type destinationType, const W
                     g_Widget->setWidgetType(m_Private->m_Type, requestType, WidgetStatus::Show);
                 }
             }
+#endif
         } else if (WidgetStatus::Show == status) {
             qDebug() << __PRETTY_FUNCTION__ << __LINE__;
             g_Setting->setLauncherTVOUT(false);
@@ -386,14 +394,37 @@ void VideoWidget::onVideoPlayerPlayStatus(const DeviceWatcherType type, const Vi
 {
     switch (playStatus) {
     case VPPS_Start: {
-        m_Private->m_MessageBox->setVisible(false);
+        if (m_Private->m_IsHandBreak) {
+            m_Private->handleHandBreakNotReady();
+        }
+        else {
+            m_Private->m_MessageBox->setVisible(false);
+        }
         //        m_Private->m_NeedSuspendToggle = true;
         break;
     }
     case VPPS_Play: {
-        if (isVisible()
-                && !m_Private->m_Timer->isActive()) {
-            m_Private->m_Timer->start();
+        qDebug()<< "=======VPPS_Play======>isVisible(): "<<isVisible();
+        if (isVisible()) {
+            if  (!m_Private->m_Timer->isActive()) {
+                m_Private->m_Timer->start();
+            }
+
+            //视频检测开关是否打开
+            bool  isOpen = SettingPersistent::getVideoWarningStatus();
+
+            //手刹是否放下
+            bool isBreak = SettingPersistent::getCurrentBrakeStatus();
+
+            if (isOpen && !isBreak) {  //手刹没有放下,弹框提示
+                m_Private->m_IsHandBreak = true;
+                m_Private->handleHandBreakNotReady();
+            }
+            else {
+                m_Private->m_IsHandBreak = false;
+                m_Private->m_MessageBox->setVisible(false);
+                m_Private->m_VideoToolBarWidget->setEnabled(true);
+            }
         }
         //        m_Private->m_NeedSuspendToggle = true;
         break;
@@ -505,19 +536,32 @@ void VideoWidget::onArkProtocol(const ArkProtocolWrapper &protocol)
     }
 
     case AT_Car:{
-    struct ArkCar* car = arkProtocolWrapperToArkCar(protocol);
-    qWarning() << __PRETTY_FUNCTION__ << __LINE__ << car->type << car->status;
+        struct ArkCar* car = arkProtocolWrapperToArkCar(protocol);
+        qWarning() << __PRETTY_FUNCTION__ << __LINE__ << car->type << car->status;
         switch(car->type)
         case ACT_Brake:{
             switch(car->status){
-                case ACS_BrakeOn:
+            case ACS_BrakeOn:  //打开手刹
+                SettingPersistent::setCurrentBrakeStatus(true);
+                if  (isVisible() && m_Private->m_IsHandBreak) {
+                    m_Private->m_IsHandBreak = false;
+                    m_Private->handleHandBreakReady();
+                }
                 break;
-                case ACS_BrakeOff:
+            case ACS_BrakeOff: //关闭手刹
+                SettingPersistent::setCurrentBrakeStatus(false);
+                //视频警告检测开关是否打开
+                bool isOpen = SettingPersistent::getVideoWarningStatus();
+                if (isVisible() && isOpen)
+                {
+                    m_Private->handleHandBreakNotReady();
+                    m_Private->m_IsHandBreak = true;
+                }
                 break;
             }
         }
-        break;
-    }
+            break;
+        }
 
     default: {
         break;
@@ -556,6 +600,7 @@ VideoWidgetPrivate::VideoWidgetPrivate(VideoWidget * parent)
     m_USBDiskElapsed = 0;
     m_RequestShow = false;
     m_HardKeyHandler = false;
+    m_IsHandBreak = false;
     initializeParent();
     connectAllSlots();
 }
@@ -630,4 +675,20 @@ QString VideoWidgetPrivate::convertTime(const int time)
     return hour.arg((time / 60) / 60, 2, 10, QChar('0'))
             + QString(":") + minute.arg((time / 60) % 60, 2, 10, QChar('0'))
             + QString(":") + second.arg(time % 60, 2, 10, QChar('0'));
+}
+
+void VideoWidgetPrivate::handleHandBreakNotReady()
+{
+    g_Multimedia->videoPlayerSetPlayStatus(VPPS_Pause);
+    m_VideoToolBarWidget->setEnabled(false);
+    m_MessageBox->setText(SourceString::PutDownHandBreak);
+    m_MessageBox->setAutoHide(false);
+    m_MessageBox->setVisible(true);
+}
+
+void VideoWidgetPrivate::handleHandBreakReady()
+{
+    m_MessageBox->setVisible(false);
+    m_VideoToolBarWidget->setEnabled(true);
+    g_Multimedia->videoPlayerSetPlayStatus(VPPS_Play);
 }

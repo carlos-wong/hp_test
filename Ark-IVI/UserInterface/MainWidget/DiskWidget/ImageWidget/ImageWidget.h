@@ -10,7 +10,7 @@
 
 class ImageWidgetPrivate;
 class ImageWidget
-        : private QWidget
+        : public QWidget
 {
     Q_OBJECT
     Q_DISABLE_COPY(ImageWidget)

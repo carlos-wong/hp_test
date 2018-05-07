@@ -6,7 +6,7 @@
 
 class SettingWidgetPrivate;
 class SettingWidget
-        : private QWidget
+        : public QWidget
 {
     Q_OBJECT
     Q_DISABLE_COPY(SettingWidget)

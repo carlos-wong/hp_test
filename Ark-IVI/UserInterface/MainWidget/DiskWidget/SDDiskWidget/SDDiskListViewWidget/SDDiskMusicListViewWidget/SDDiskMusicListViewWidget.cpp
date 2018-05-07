@@ -289,6 +289,12 @@ void SDDiskMusicListViewWidgetPrivate::initialize()
     m_SDDiskMusicMessageBox->hide();
     m_MusicListView = new MultimediaListView(m_Parent);
     m_MusicListView->hide();
+
+#ifdef DESKTOP_AMD64
+    m_MusicListView->appendListView(QString("test1.mp3"));
+    m_MusicListView->appendListView(QString("test2.mp3"));
+    m_MusicListView->setVisible(true);
+#endif
 }
 
 void SDDiskMusicListViewWidgetPrivate::connectAllSlots()

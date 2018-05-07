@@ -10,7 +10,7 @@
 
 class VideoWidgetPrivate;
 class VideoWidget
-        : private QWidget
+        : public QWidget
 {
     Q_OBJECT
     Q_DISABLE_COPY(VideoWidget)

@@ -7,7 +7,7 @@
 
 class AUXWidgetPrivate;
 class AUXWidget
-        : private QWidget
+        : public QWidget
 {
     Q_OBJECT
     Q_DISABLE_COPY(AUXWidget)

@@ -40,6 +40,7 @@ private:
     TextWidget* m_ArtistText;
     BmpWidget* m_AlbumIcon;
     TextWidget* m_AlbumText;
+    BmpWidget* m_AlbumBackIcon;
 };
 
 MusicInformationWidget::MusicInformationWidget(QWidget *parent)
@@ -64,7 +65,7 @@ void MusicInformationWidget::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
     Q_D(MusicInformationWidget);
-    painter.drawPixmap(g_Widget->geometryFit(0, 0, 198, 198), d->m_CoverIcon);
+    painter.drawPixmap(g_Widget->geometryFit(25, 23, 154, 155), d->m_CoverIcon);
 }
 
 void MusicInformationWidget::onMusicPlayerID3TagChange(const int type, const int index, const QString &fileName, const QString& title, const QString& artist, const QString& album, const int endTime)
@@ -112,7 +113,7 @@ void MusicInformationWidget::onMusicPlayerID3TagChange(const int type, const int
             }
         }
         if (cover.isNull()) {
-            d->m_CoverIcon.load(QString(":/Images/MusicInformationWidgetCover.png"));
+             d->m_CoverIcon.load(QString(""));
         }
     }
     d->m_File->setText(fileInfo.fileName());
@@ -144,7 +145,8 @@ MusicInformationWidgetPrivate::MusicInformationWidgetPrivate(MusicInformationWid
     m_ArtistIcon = NULL;
     m_ArtistText = NULL;
     m_AlbumIcon = NULL;
-    m_AlbumText = NULL;
+    m_AlbumText = NULL;    
+    m_AlbumBackIcon = NULL;
     initializeBasic();
     initializeParent();
     connectAllSlots();
@@ -163,7 +165,12 @@ void MusicInformationWidgetPrivate::initializeParent()
 void MusicInformationWidgetPrivate::initializeBasic()
 {
     Q_Q(MusicInformationWidget);
-    m_CoverIcon.load(QString(":/Images/MusicInformationWidgetCover.png"));
+    m_AlbumBackIcon = new BmpWidget(q);
+    m_AlbumBackIcon->setBackgroundBmpPath(":/Images/hw_01_multimedia_CD.png");
+    m_AlbumBackIcon->setWidgetAdaptToImage(true);
+
+//    m_CoverIcon.load(QString(":/Images/hw_01_theme_main_04.png"));
+
     m_File = new TextWidget(q);
     m_File->setLanguageType(TextWidget::T_NoTranslate);
     m_File->setAlignmentFlag(Qt::AlignLeft | Qt::AlignVCenter);
@@ -171,32 +178,41 @@ void MusicInformationWidgetPrivate::initializeBasic()
     g_Widget->geometryFit(329, 0, 339, 81, m_File);
     m_File->setAnimation(true);
     m_File->setVisible(true);
+
     m_TitleIcon = new BmpWidget(q);
-    m_TitleIcon->setBackgroundBmpPath(QString(":/Images/MusicInformationWidgetTitle.png"));
-    g_Widget->geometryFit(296, 81, 22, 22, m_TitleIcon);
+    m_TitleIcon->setBackgroundBmpPath(QString(":/Images/hw_01_multimedia_music_name.png"));
+    g_Widget->MoveToPoint(296, 81, m_TitleIcon);
+    m_TitleIcon->setWidgetAdaptToImage(true);
     m_TitleIcon->setVisible(true);
+
     m_TitleText = new TextWidget(q);
     m_TitleText->setLanguageType(TextWidget::T_NoTranslate);
     m_TitleText->setAlignmentFlag(Qt::AlignLeft | Qt::AlignVCenter);
-    g_Widget->geometryFit(329, 81, 339, 22, m_TitleText);
+    g_Widget->geometryFit(329, 81, 339, 31, m_TitleText);
     m_TitleText->setVisible(true);
+
     m_ArtistIcon = new BmpWidget(q);
-    m_ArtistIcon->setBackgroundBmpPath(QString(":/Images/MusicInformationWidgetArtist.png"));
-    g_Widget->geometryFit(296, 114, 22, 22, m_ArtistIcon);
+    m_ArtistIcon->setBackgroundBmpPath(QString(":/Images/hw_01_multimedia_music_singer.png"));
+    g_Widget->MoveToPoint(296, 120, m_ArtistIcon);
+    m_ArtistIcon->setWidgetAdaptToImage(true);
     m_ArtistIcon->setVisible(true);
+
     m_ArtistText = new TextWidget(q);
     m_ArtistText->setLanguageType(TextWidget::T_NoTranslate);
     m_ArtistText->setAlignmentFlag(Qt::AlignLeft | Qt::AlignVCenter);
-    g_Widget->geometryFit(329, 114, 339, 22, m_ArtistText);
+    g_Widget->geometryFit(329, 120, 339, 31, m_ArtistText);
     m_ArtistText->setVisible(true);
+
     m_AlbumIcon = new BmpWidget(q);
-    m_AlbumIcon->setBackgroundBmpPath(QString(":/Images/MusicInformationWidgetAlbum.png"));
-    g_Widget->geometryFit(296, 147, 22, 22, m_AlbumIcon);
+    m_AlbumIcon->setBackgroundBmpPath(QString(":/Images/hw_01_multimedia_music_special.png"));
+    g_Widget->MoveToPoint(296, 159, m_AlbumIcon);
+    m_AlbumIcon->setWidgetAdaptToImage(true);
     m_AlbumIcon->setVisible(true);
+
     m_AlbumText = new TextWidget(q);
     m_AlbumText->setLanguageType(TextWidget::T_NoTranslate);
     m_AlbumText->setAlignmentFlag(Qt::AlignLeft | Qt::AlignVCenter);
-    g_Widget->geometryFit(329, 147, 339, 22, m_AlbumText);
+    g_Widget->geometryFit(329, 159, 339, 31, m_AlbumText);
     m_AlbumText->setVisible(true);
 }
 

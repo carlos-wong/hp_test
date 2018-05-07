@@ -91,7 +91,7 @@ void Launcher::onStartComplete()
 {
     Q_D(Launcher);
 #ifndef DESKTOP_AMD64
-    d->m_MainWidget->makeSureComplete();
+    // d->m_MainWidget->makeSureComplete();
 #endif
     setWindowFlags(Qt::FramelessWindowHint);
     setAttribute(Qt::WA_TranslucentBackground);
@@ -135,8 +135,9 @@ void LauncherPrivate::initializeParent()
             m_CalibrateWidget->startCalibrate();
         }
     }
-#else
     q->onStartComplete();
+#else
+    q->onStartComplete();   
 #endif
 }
 
@@ -186,6 +187,10 @@ void LauncherPrivate::initializeReversingWidget()
     if (NULL == m_ReversingWidget) {
         Q_Q(Launcher);
         m_ReversingWidget = new ReversingWidget(q);
+        Qt::ConnectionType type = static_cast<Qt::ConnectionType>(Qt::UniqueConnection | Qt::AutoConnection);
+        QObject::connect(m_ReversingWidget, ARKSENDER(visibleChanged(bool)),
+                         m_MainWidget,            ARKRECEIVER(onReveringWidgetVisibleChanged(bool)),
+                         type);
     }
 }
 

@@ -271,6 +271,12 @@ void USBDiskVideoListViewWidgetPrivate::initialize()
     m_USBDiskVideoMessageBox->hide();
     m_VideoListView = new MultimediaListView(m_Parent);
     m_VideoListView->hide();
+
+#ifdef DESKTOP_AMD64
+    m_VideoListView->appendListView(QString("test1.mp4"));
+    m_VideoListView->appendListView(QString("test2.mp4"));
+    m_VideoListView->show();
+#endif
 }
 
 void USBDiskVideoListViewWidgetPrivate::connectAllSlots()

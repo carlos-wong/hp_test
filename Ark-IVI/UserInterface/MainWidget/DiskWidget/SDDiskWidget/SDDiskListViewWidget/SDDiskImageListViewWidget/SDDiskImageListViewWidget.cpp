@@ -254,6 +254,12 @@ void SDDiskImageListViewWidgetPrivate::initialize()
     m_SDDiskImageMessageBox->hide();
     m_ImageListView = new MultimediaListView(m_Parent);
     m_ImageListView->hide();
+
+#ifdef DESKTOP_AMD64
+    m_ImageListView->appendListView(QString("test1.png"));
+    m_ImageListView->appendListView(QString("test2.png"));
+    m_ImageListView->setVisible(true);
+#endif
 }
 
 void SDDiskImageListViewWidgetPrivate::connectAllSlots()

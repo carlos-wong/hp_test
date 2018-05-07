@@ -8,7 +8,7 @@
 
 class SDDiskWidgetPrivate;
 class SDDiskWidget
-        : private QWidget
+        : public QWidget
 {
     Q_OBJECT
     Q_DISABLE_COPY(SDDiskWidget)

@@ -7,7 +7,7 @@
 
 class SteeringWidgetPrivate;
 class SteeringWidget
-        : private QWidget
+        : public QWidget
 {
     Q_OBJECT
     Q_DISABLE_COPY(SteeringWidget)

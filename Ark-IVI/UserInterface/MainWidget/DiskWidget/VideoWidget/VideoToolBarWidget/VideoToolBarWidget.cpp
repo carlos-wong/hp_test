@@ -76,16 +76,16 @@ void VideoToolBarWidget::onVideoPlayerPlayStatus(const DeviceWatcherType type, c
     m_Private->m_NextBtn->setEnabled(VPPS_Start != status);
     switch (status) {
     case VPPS_Play: {
-        m_Private->m_ToggleBtn->setNormalBmpPath(QString(":/Images/MultimediaPauseNormal.png"));
-        m_Private->m_ToggleBtn->setPressBmpPath(QString(":/Images/MultimediaPausePress.png"));
+        m_Private->m_ToggleBtn->setNormalBmpPath(QString(":/Images/hw_01_multimedia_pause_normal.png"));
+        m_Private->m_ToggleBtn->setPressBmpPath(QString(":/Images/hw_01_multimedia_pause_pressed.png"));
         break;
     }
     case VPPS_Start:
     case VPPS_Unsupport:
     case VPPS_Stop:
     case VPPS_Pause: {
-        m_Private->m_ToggleBtn->setNormalBmpPath(QString(":/Images/MultimediaPlayNormal.png"));
-        m_Private->m_ToggleBtn->setPressBmpPath(QString(":/Images/MultimediaPlayPress.png"));
+        m_Private->m_ToggleBtn->setNormalBmpPath(QString(":/Images/hw_01_multimedia_play_normal.png"));
+        m_Private->m_ToggleBtn->setPressBmpPath(QString(":/Images/hw_01_multimedia_play_pressed.png"));
         break;
     }
     default : {
@@ -98,19 +98,19 @@ void VideoToolBarWidget::onVideoPlayerPlayMode(const VideoPlayerPlayMode mode)
 {
     switch (mode) {
     case VPPM_RepeatOnce: {
-        m_Private->m_ModeBtn->setNormalBmpPath(QString(":/Images/MultimediaSingleNormal.png"));
-        m_Private->m_ModeBtn->setPressBmpPath(QString(":/Images/MultimediaSinglePress.png"));
+        m_Private->m_ModeBtn->setNormalBmpPath(QString(":/Images/hw_01_multimedia_playmode_single_normal.png"));
+        m_Private->m_ModeBtn->setPressBmpPath(QString(":/Images/hw_01_multimedia_playmode_single_pressed.png"));
         break;
     }
     case VPPM_Shuffle: {
-        m_Private->m_ModeBtn->setNormalBmpPath(QString(":/Images/MultimediaRandomNormal.png"));
-        m_Private->m_ModeBtn->setPressBmpPath(QString(":/Images/MultimediaRandomPress.png"));
+        m_Private->m_ModeBtn->setNormalBmpPath(QString(":/Images/hw_01_multimedia_playmode_random_normal.png"));
+        m_Private->m_ModeBtn->setPressBmpPath(QString(":/Images/hw_01_multimedia_playmode_random_pressed.png"));
         break;
     }
     case VPPM_AllRepeat:
     default : {
-        m_Private->m_ModeBtn->setNormalBmpPath(QString(":/Images/MultimediaAllNormal.png"));
-        m_Private->m_ModeBtn->setPressBmpPath(QString(":/Images/MultimediaAllPress.png"));
+        m_Private->m_ModeBtn->setNormalBmpPath(QString(":/Images/hw_01_multimedia_playmode_list_normal.png"));
+        m_Private->m_ModeBtn->setPressBmpPath(QString(":/Images/hw_01_multimedia_playmode_list_pressed.png"));
         break;
     }
     }
@@ -151,34 +151,38 @@ VideoToolBarWidgetPrivate::~VideoToolBarWidgetPrivate()
 
 void VideoToolBarWidgetPrivate::initialize()
 {
+    int btnY = 7;
+    int btnWidth = 160;
+    int btnHeight = 94;
+
     m_Background = new BmpWidget(m_Parent);
-    m_Background->setBackgroundBmpPath(QString(":/Images/MultimediaToolWidgetBackground.png"));
-    g_Widget->geometryFit(0, 0, 800, 94, m_Background);
+    m_Background->setBackgroundBmpPath(QString(":/Images/hw_01_radio_bottom_toolBar.png"));
+    g_Widget->geometryFit(0, btnY, 800, btnHeight, m_Background);
     m_Background->setVisible(true);
     m_PreviousBtn = new BmpButton(m_Parent);
-    g_Widget->geometryFit(0, 14, 160, 80, m_PreviousBtn);
-    m_PreviousBtn->setNormalBmpPath(QString(":/Images/MultimediaPreviousNormal.png"));
-    m_PreviousBtn->setPressBmpPath(QString(":/Images/MultimediaPreviousPress.png"));
+    g_Widget->geometryFit(0, btnY, btnWidth, btnHeight, m_PreviousBtn);
+    m_PreviousBtn->setNormalBmpPath(QString(":/Images/hw_01_multimedia_previous_normal.png"));
+    m_PreviousBtn->setPressBmpPath(QString(":/Images/hw_01_multimedia_previous_pressed.png"));
     m_PreviousBtn->setVisible(true);
     m_ToggleBtn = new BmpButton(m_Parent);
-    g_Widget->geometryFit(160, 14, 160, 80, m_ToggleBtn);
-    m_ToggleBtn->setNormalBmpPath(QString(":/Images/MultimediaPlayNormal.png"));
-    m_ToggleBtn->setPressBmpPath(QString(":/Images/MultimediaPlayPress.png"));
+    g_Widget->geometryFit(btnWidth+1, btnY, btnWidth-2, btnHeight, m_ToggleBtn);
+    m_ToggleBtn->setNormalBmpPath(QString(":/Images/hw_01_multimedia_play_normal.png"));
+    m_ToggleBtn->setPressBmpPath(QString(":/Images/hw_01_multimedia_play_pressed.png"));
     m_ToggleBtn->setVisible(true);
     m_NextBtn = new BmpButton(m_Parent);
-    g_Widget->geometryFit(320, 14, 160, 80, m_NextBtn);
-    m_NextBtn->setNormalBmpPath(QString(":/Images/MultimediaNextNormal.png"));
-    m_NextBtn->setPressBmpPath(QString(":/Images/MultimediaNextPress.png"));
+    g_Widget->geometryFit(btnWidth*2+2, btnY, btnWidth-3, btnHeight, m_NextBtn);
+    m_NextBtn->setNormalBmpPath(QString(":/Images/hw_01_multimedia_next_normal.png"));
+    m_NextBtn->setPressBmpPath(QString(":/Images/hw_01_multimedia_next_pressed.png"));
     m_NextBtn->setVisible(true);
     m_ModeBtn = new BmpButton(m_Parent);
-    g_Widget->geometryFit(480, 14, 160, 80, m_ModeBtn);
-    m_ModeBtn->setNormalBmpPath(QString(":/Images/MultimediaAllNormal.png"));
-    m_ModeBtn->setPressBmpPath(QString(":/Images/MultimediaAllPress.png"));
+    g_Widget->geometryFit(btnWidth*3+2, btnY, btnWidth-2, btnHeight, m_ModeBtn);
+    m_ModeBtn->setNormalBmpPath(QString(":/Images/hw_01_multimedia_playmode_normal.png"));
+    m_ModeBtn->setPressBmpPath(QString(":/Images/hw_01_multimedia_playmode_pressed.png"));
     m_ModeBtn->setVisible(true);
     m_ListBtn = new BmpButton(m_Parent);
-    g_Widget->geometryFit(640, 14, 160, 80, m_ListBtn);
-    m_ListBtn->setNormalBmpPath(QString(":/Images/MultimediaListNormal.png"));
-    m_ListBtn->setPressBmpPath(QString(":/Images/MultimediaListPress.png"));
+    g_Widget->geometryFit(btnWidth*4+2, btnY, btnWidth-2, btnHeight, m_ListBtn);
+    m_ListBtn->setNormalBmpPath(QString(":/Images/hw_01_multimedia_function_normal.png"));
+    m_ListBtn->setPressBmpPath(QString(":/Images/hw_01_multimedia_function_pressed.png"));
     m_ListBtn->setVisible(true);
 }
 

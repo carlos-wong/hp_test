@@ -280,6 +280,12 @@ void USBDiskMusicListViewWidgetPrivate::initialize()
     m_USBDiskMusicMessageBox->hide();
     m_MusicListView = new MultimediaListView(m_Parent);
     m_MusicListView->hide();
+
+#ifdef DESKTOP_AMD64
+    m_MusicListView->appendListView(QString("test1.mp3"));
+    m_MusicListView->appendListView(QString("test2.mp3"));
+    m_MusicListView->show();
+#endif
 }
 
 void USBDiskMusicListViewWidgetPrivate::connectAllSlots()
@@ -296,7 +302,7 @@ void USBDiskMusicListViewWidgetPrivate::connectAllSlots()
     QObject::connect(m_MusicListView, ARKSENDER(listViewItemRelease(const int)),
                      m_Parent,        ARKRECEIVER(onMusicListViewItemRelease(const int)),
                      type);
-    QObject::connect(m_MusicListView, ARKSENDER(listViewItemRelease(const int)),
-                     m_Parent,        ARKRECEIVER(onMusicListViewItemRelease(const int)),
-                     type);
+//    QObject::connect(m_MusicListView, ARKSENDER(listViewItemRelease(const int)),
+//                     m_Parent,        ARKRECEIVER(onMusicListViewItemRelease(const int)),
+//                     type);
 }

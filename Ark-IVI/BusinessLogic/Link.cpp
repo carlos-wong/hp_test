@@ -13,6 +13,8 @@
 #include "BusinessLogic/Audio.h"
 #include <unistd.h>
 
+extern bool g_isClickedTlink;
+
 #define ArkMicroCarlifeService          QString("com.arkmicro.carlife")
 #define ArkMicroCarlifePath             QString("/com/arkmicro/carlife")
 #define ArkMicroCarlifeInterface        QString("Local.DbusServer.Carlife")
@@ -263,6 +265,32 @@ void Link::onServiceUnregistered(const QString &service)
 void Link::linkStatusChange(const int type, const int status)
 {
     qDebug() << "Link::linkStatusChange" << type << status;
+
+    bool isAutoLink = SettingPersistent::getAutoLinkPhone();
+    if (isAutoLink && status == LINK_INSERTED )
+    {
+        if (type == ANDROID_CARLIFE)
+        {
+            g_isClickedTlink = true;
+            int linkType = SettingPersistent::getPhoneLinkType();
+            Widget::Type wType;
+            switch (linkType) {
+            case 1:
+                wType = Widget::T_Auto;
+                break;
+            case 0:
+            default:
+                wType = Widget::T_Carlife;
+                break;
+            }
+            g_Widget->setWidgetType(Widget::T_Link, wType, WidgetStatus::RequestShow);
+        }else if (type == IOS_CARLIFE)
+        {
+            g_isClickedTlink = true;
+            g_Widget->setWidgetType(Widget::T_Link, Widget::T_Carplay, WidgetStatus::RequestShow);
+        }
+    }
+
     switch (type) {
     case CARLIFE: {
         m_Private->carlifeSourceHandler(status);
@@ -407,35 +435,35 @@ LinkPrivate::~LinkPrivate()
 
 void LinkPrivate::initialize()
 {
-    memallocload();
-    driverload();
+    // memallocload();
+    // driverload();
     CarLinkType type = SettingPersistent::getCarLinkType();
-    if (CLT_CarlifeCarplay == type) {
+    // if (CLT_CarlifeCarplay == type) {
         if (NULL == m_CarlifeLinkProxy) {
             m_CarlifeLinkProxy = new Local::DbusServer::Carlife(ArkMicroCarlifeService,
                                                                 ArkMicroCarlifePath,
                                                                 QDBusConnection::sessionBus(),
                                                                 m_Parent);
         }
-    } else {
+    // } else {
         if (NULL == m_AutoLinkProxy) {
             m_AutoLinkProxy = new Local::DbusServer::Auto(ArkMicroAutoService,
                                                           ArkMicroAutoPath,
                                                           QDBusConnection::sessionBus(),
                                                           m_Parent);
         }
-    }
+    // }
     if (NULL == m_CarplayLinkProxy) {
         m_CarplayLinkProxy = new Local::DbusServer::Carplay(ArkMicroCarplayService,
                                                             ArkMicroCarplayPath,
                                                             QDBusConnection::sessionBus(),
                                                             m_Parent);
     }
-    if (CLT_CarlifeCarplay == type) {
+    // if (CLT_CarlifeCarplay == type) {
         g_DbusService->addWatchedService(ArkMicroAutoService);
-    } else {
+    // } else {
         g_DbusService->addWatchedService(ArkMicroCarlifeService);
-    }
+    // }
     g_DbusService->addWatchedService(ArkMicroCarplayService);
     connectSignalAndSlotByNamesake(g_DbusService, m_Parent, ARKRECEIVER(onServiceUnregistered(const QString &)));
 }
@@ -474,6 +502,10 @@ void LinkPrivate::requestCarlifeHandler(const Link_STATUS status)
             qDebug() << "method call" << __PRETTY_FUNCTION__ << " failed" << reply.error();
         }
     }
+
+#ifdef DESKTOP_AMD64
+    m_Parent->onLinkStatusChange(1, 2);
+#endif
 }
 
 void LinkPrivate::requestCarplayHandler(const Link_STATUS status)
@@ -484,6 +516,10 @@ void LinkPrivate::requestCarplayHandler(const Link_STATUS status)
     if (reply.isError()) {
         qDebug() << "method call" << __PRETTY_FUNCTION__ << " failed" << reply.error();
     }
+
+#ifdef DESKTOP_AMD64
+    m_Parent->onLinkStatusChange(0, 2);
+#endif
 }
 
 void LinkPrivate::carlifeSourceHandler(const Link_STATUS status)
@@ -519,6 +555,7 @@ void LinkPrivate::carlifeSourceHandler(const Link_STATUS status)
         m_Link_STATUS = LINK_SUCCESS;
         break;
     }
+    case LINK_FAIL:
     case LINK_REMOVED: {
         if (AS_CarlifePhone == g_Audio->getAudioSource()) {
             carlifeSourceHandler(LINK_CALL_PHONE_EXITED);
@@ -574,11 +611,15 @@ void LinkPrivate::requestAutoHandler(const int status)
             qDebug() << "method call" << __PRETTY_FUNCTION__ << " failed" << reply.error();
         }
     }
+
+#ifdef DESKTOP_AMD64
+    m_Parent->onLinkStatusChange(5, 2);
+#endif
 }
 
 void LinkPrivate::autoSourceHandler(const int status)
 {
-    qDebug() << " LinkPrivate::carlifeSourceHandler" << status;
+    qDebug() << " LinkPrivate::autoSourceHandler" << status;
     switch (status) {
     case LINK_STARTING: {
         m_Link_Type = AUTO;
@@ -609,7 +650,9 @@ void LinkPrivate::autoSourceHandler(const int status)
         m_Link_STATUS = LINK_SUCCESS;
         break;
     }
+    case LINK_FAIL:
     case LINK_REMOVED: {
+        qDebug() << __PRETTY_FUNCTION__ << __LINE__;
         if (AS_AutoPhone == g_Audio->getAudioSource()) {
             autoSourceHandler(LINK_CALL_PHONE_EXITED);
             m_Parent->onLinkStatusChange(AUTO, LINK_CALL_PHONE_EXITED);
@@ -619,6 +662,8 @@ void LinkPrivate::autoSourceHandler(const int status)
         if (AS_AutoMusic == g_Audio->getMultimediaSource()) {
             g_Radio->initialize();
         }
+
+        qDebug() << __PRETTY_FUNCTION__ << __LINE__;
         break;
     }
     case LINK_EXITED: {
@@ -688,6 +733,7 @@ void LinkPrivate::carplaySourceHandler(const Link_STATUS status)
         m_Link_STATUS = LINK_SUCCESS;
         break;
     }
+    case LINK_FAIL:
     case LINK_REMOVED: {
         m_Link_Type = -1;
         m_Link_STATUS = LINK_REMOVED;

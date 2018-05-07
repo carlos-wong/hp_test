@@ -77,6 +77,7 @@ ImageWidget::~ImageWidget()
 
 void ImageWidget::paintEvent(QPaintEvent *event)
 {
+    g_Multimedia->videoPlayerExit();
     QPainter painter(this);
     painter.fillRect(rect(), Qt::black);
 }
@@ -183,6 +184,9 @@ void ImageWidget::onWidgetTypeChange(const Widget::Type destinationType, const W
     }
     case Widget::T_USBImage: {
         if (WidgetStatus::RequestShow == status) {
+#ifdef DESKTOP_AMD64
+            g_Widget->setWidgetType(Widget::T_USBImage, Widget::T_Undefine, WidgetStatus::Show);
+#else
             if ((Widget::T_USBDisk == requestType)
                     && (-1 != m_Private->m_USBDiskLastIndex)) {
                 if (DWT_USBDisk != m_Private->m_DeviceWatcherType) {
@@ -210,6 +214,7 @@ void ImageWidget::onWidgetTypeChange(const Widget::Type destinationType, const W
                     g_Widget->setWidgetType(m_Private->m_Type, requestType, WidgetStatus::Show);
                 }
             }
+#endif
         } else if (WidgetStatus::Show == status) {
             m_Private->m_TouchRect = g_Widget->geometryFit(0, 74, 800, 480 - 74 - 103);
             m_Private->initializeToolBarWidget();
@@ -794,8 +799,11 @@ void ImageWidget::onToolButtonRelease(const int type)
         break;
     }
     default: {
-        break;
+        return;
     }
     }
+
+    m_Private->initializeTimer();
+    m_Private->m_Timer->start();
 }
 
